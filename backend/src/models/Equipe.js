@@ -5,19 +5,24 @@ const equipeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  membros: [{
-    usuario: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Usuario',
-      required: true,
-    },
-    perfil: {
+  setores: [{
+    nome: {
       type: String,
-      enum: ['admin', 'mentor', 'colaborador'], 
-      default: 'colaborador',
       required: true,
     },
-  }],
+    rodizios: [{
+      descricao: {
+        type: String,
+        required: true,
+      },
+      dataInicio: {
+        type: Date,
+      },
+      dataFim: {
+        type: Date,
+      }
+    }]
+  }]
 }, { timestamps: true });
 
 const Equipe = mongoose.model('Equipe', equipeSchema);
