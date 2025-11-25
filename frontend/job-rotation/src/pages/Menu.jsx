@@ -179,7 +179,7 @@ function Menu() {
                         {error}
                     </p>
                 ) : equipes.length === 0 ? (
-                    <div className="p-10 text-center bg-white rounded-xl border border-gray-200 shadow-md">
+                    <div className="p-10 text-center rounded-xl">
                         <p className="text-lg text-gray-600 font-medium">
                             Nenhuma equipe por aqui...
                         </p>
