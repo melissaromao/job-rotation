@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from 'axios'; 
 
 const API = import.meta.env.VITE_BACKEND_API;
 
@@ -96,7 +96,6 @@ function ButtonBack() {
     );
 }
 
-
 export default function CriarEquipe() {
     const navigate = useNavigate();
     const [nome, setNome] = useState('');
@@ -135,7 +134,7 @@ export default function CriarEquipe() {
 
         setLoading(true);
         try {
-            const url = `${API}/equipes/criar`;
+            const url = `${API}/equipes/criar`; 
             console.log('POST ->', url, { nome, descricao });
 
             const payload = descricao ? { nome, descricao } : { nome };
@@ -156,15 +155,23 @@ export default function CriarEquipe() {
 
         } catch (err) {
             console.error('Erro ao criar equipe (axios):', err);
-            const isUnauthorized = err.response && err.response.status === 401;
+            const status = err.response?.status;
 
-            if (isUnauthorized) {
-                setErrorMsg('Sua sessão expirou. Por favor, faça login novamente.');
+            if (status === 401) {
+                setErrorMsg('Sua sessão expirou (401 Não Autorizado). Por favor, faça login novamente.');
                 onLogout();
             } else if (err.response) {
-                setErrorMsg(err.response?.data?.mensagem || err.response?.data?.message || 'Erro no servidor ao criar equipe.');
+                const serverMessage = err.response?.data?.mensagem || err.response?.data?.message;
+                const statusMessage = status ? ` (Status ${status})` : '';
+                
+                if (serverMessage) {
+                    setErrorMsg(`Erro do Servidor${statusMessage}: ${serverMessage}`);
+                } else {
+                    setErrorMsg(`Erro desconhecido do Servidor${statusMessage}. Verifique o console para mais detalhes.`);
+                }
+                
             } else if (err.request) {
-                setErrorMsg('Sem resposta do servidor. Verifique a URL ou se o servidor está no ar.');
+                setErrorMsg(`Erro de Conexão: O servidor em ${API} não respondeu. Verifique se o endereço da API está correto e se o servidor está ativo.`);
             } else {
                 setErrorMsg('Erro ao tentar conectar: ' + err.message);
             }
