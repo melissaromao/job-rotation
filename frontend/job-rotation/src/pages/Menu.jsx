@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom'; 
+import axios from 'axios';
+
 const API = import.meta.env.VITE_BACKEND_API;
 
 function Navbar({ onLogout }) { 
@@ -64,6 +66,7 @@ function Navbar({ onLogout }) {
 
 function Menu() { 
     const navigate = useNavigate();
+    const location = useLocation(); 
     
     const token = localStorage.getItem('token'); 
     
@@ -108,7 +111,9 @@ function Menu() {
         } catch (err) {
             console.error("Erro ao buscar equipes:", err);
             
-            if (axios.isAxiosError(err) || (err.message && err.message.includes('401'))) {
+            const isUnauthorized = err.response && err.response.status === 401;
+            
+            if (isUnauthorized) {
                 onLogout(); 
                 setError("Sessão expirada. Redirecionando para login.");
             } else {
@@ -125,6 +130,16 @@ function Menu() {
             buscarEquipes();
         }
     }, [buscarEquipes, token]);
+
+    useEffect(() => {
+        if (location.state && location.state.refreshTeams) {
+            console.log('Sinal de atualização de equipes recebido. Recarregando...');
+            buscarEquipes();
+            
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location.state, buscarEquipes, navigate, location.pathname]);
+
 
     const handleCriarEquipe = () => {
         navigate('/criar-equipe'); 
@@ -179,7 +194,7 @@ function Menu() {
                         {error}
                     </p>
                 ) : equipes.length === 0 ? (
-                    <div className="p-10 text-center rounded-xl">
+                    <div className="p-10 text-center bg-white rounded-xl border border-gray-200 shadow-md">
                         <p className="text-lg text-gray-600 font-medium">
                             Nenhuma equipe por aqui...
                         </p>

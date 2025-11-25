@@ -150,7 +150,7 @@ export default function CriarEquipe() {
             setSuccessMsg(`Equipe "${res.data.nome}" criada com sucesso! Redirecionando...`);
             
             setTimeout(() => {
-                navigate('/', { replace: true });
+                navigate('/menu', { replace: true });
             }, 1500);
 
         } catch (err) {
