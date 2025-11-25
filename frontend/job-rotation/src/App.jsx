@@ -4,6 +4,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Menu from './pages/Menu';
+import CriarEquipe from './pages/CriarEquipe';
 import './index.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/menu" element={<Menu />} />
+          <Route path="/criar-equipe" element={<CriarEquipe />} />
         </Routes>
       </div>
     </Router>
