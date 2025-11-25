@@ -3,21 +3,21 @@ const Usuario = require("../models/Usuario");
 
 const criarEquipe = async (req, res) => {
     try {
-        const userId = req.userId; 
+        const userId = req.user ? req.user.id : null; 
 
         if (!userId) {
-            return res.status(401).json({ mensagem: "Usuário não autenticado ou ID do usuário ausente." });
+            return res.status(401).json({ mensagem: "Usuário não autenticado ou ID do usuário ausente no token." });
         }
 
         const { nome, descricao } = req.body;
 
         if (!nome) {
-             return res.status(400).json({ mensagem: "O nome da equipe é obrigatório." });
+            return res.status(400).json({ mensagem: "O nome da equipe é obrigatório." });
         }
 
         const membrosIniciais = [
             {
-                usuario: userId,
+                usuario: userId, 
                 perfil: 'admin', 
             }
         ];
@@ -41,7 +41,11 @@ const criarEquipe = async (req, res) => {
 
 const listarEquipes = async (req, res) => {
     try {
-        const userId = req.userId; 
+        const userId = req.user ? req.user.id : null; 
+        
+        if (!userId) {
+             return res.status(401).json({ mensagem: "Usuário não autenticado para listar equipes." });
+        }
         
         const equipes = await Equipe.find({
             "membros.usuario": userId 
